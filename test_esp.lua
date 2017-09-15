@@ -1,6 +1,6 @@
-dofile("util.lua")
-dofile("util_wifi.lua")
-        
-local LED0 = 0;        
-local LED1 = 4;   
-
+require("util_httpServer");
+if wifi.sta.getip() then
+    print('true')
+else
+    print('false')
+end

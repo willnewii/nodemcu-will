@@ -1,8 +1,19 @@
 util_wifi = {}
 
+function util_wifi.setupAP()
+    wifi.setmode(wifi.STATIONAP);
+    
+    station_cfg={};
+    station_cfg.ssid = 'nodemcu_1203';
+    station_cfg.pwd = '123456789';
+
+    wifi.ap.config(station_cfg)
+end
+
+
 function util_wifi.setupWifi(SSID,PASS)
     print(wifi.sta.getip());
-    wifi.setmode(wifi.STATION);
+    --wifi.setmode(wifi.STATION);
 
     station_cfg={}
     station_cfg.ssid = SSID;

@@ -3,7 +3,7 @@ tmr.alarm(1, 1000, tmr.ALARM_AUTO, function()
 		print('Waiting for IP ...')
 	else
 		print('IP is ' .. wifi.sta.getip())
-	tmr.stop(1)
+		tmr.stop(1)
 	end
 end)
 
@@ -11,7 +11,7 @@ dofile("httpServer.lua");
 httpServer:listen(80); 
 
 httpServer:use('/', function(req, res)
-    res:send('hello nodemcu') -- /welcome?name=doge
+    res:send('hello nodemcu') -- 
 end)
 
 httpServer:use('/welcome', function(req, res)
