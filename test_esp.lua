@@ -1,6 +1,7 @@
-require("util_httpServer");
+require("util_httpServer")
+
 if wifi.sta.getip() then
-    print('true')
+    print("true")
 else
-    print('false')
+    print("false")
 end
