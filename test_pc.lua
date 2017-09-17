@@ -44,3 +44,6 @@ util_uart.init(function(airInfo)
     util_websocket.send(airInfo,'plantower');
 end);
 ]] --
+
+require("util_httpServer")
+

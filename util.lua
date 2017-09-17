@@ -21,7 +21,7 @@ function util.printInfo()
 end
 
 function util.jsondecode(_str)
-    data = nil
+    local data = nil
     pcall(
         function(str)
             data = sjson.decode(str)
@@ -29,6 +29,29 @@ function util.jsondecode(_str)
         _str
     )
     return data
+end
+
+function util.writeConfig(url)
+    fd = file.open("device.config", "w+")
+    if fd then
+        fd:write('{ "socketServer": "' .. url .. '" }')
+        fd:close()
+        fd = nil
+    end
+end
+
+function util.readConfig()
+    fd = file.open("device.config", "r")
+    socketServer = nil
+    if fd then
+        str = fd:readline()
+        --print(str)
+        result = util.jsondecode(str)
+        socketServer = result.socketServer
+        fd:close()
+        fd = nil
+    end
+    return socketServer
 end
 
 function util.test()

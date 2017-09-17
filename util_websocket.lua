@@ -1,4 +1,4 @@
-dofile("util_gpio.lua")
+require("util_gpio")
 util_websocket = {}
 
 local ws = websocket.createClient()
@@ -48,6 +48,10 @@ function util_websocket.send(data, type)
     msg.data = data
     msg.type = type
     ws:send(sjson.encode(msg))
+end
+
+function util_websocket.close()
+    ws:close();
 end
 
 function handleGPIO(pin, value)

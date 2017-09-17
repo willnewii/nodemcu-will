@@ -11,20 +11,3 @@ tmr.alarm(
         end
     end
 )
-
-dofile("httpServer.lua")
-httpServer:listen(80)
-
-httpServer:use(
-    "/",
-    function(req, res)
-        res:send("hello nodemcu") --
-    end
-)
-
-httpServer:use(
-    "/welcome",
-    function(req, res)
-        res:send("Hello " .. req.query.name) -- /welcome?name=doge
-    end
-)

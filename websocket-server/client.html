@@ -16,7 +16,7 @@
 </body>
 
 <script type="text/javascript">
-  let url = "ws://10.1.101.184:5555/websocket";
+  let url = "ws://192.168.1.2:5555/websocket";
   var websocket = null;
   //判断当前浏览器是否支持WebSocket
   if ('WebSocket' in window) {
@@ -52,6 +52,17 @@
 
   //将消息显示在网页上
   function setMessageInnerHTML(innerHTML) {
+    try {
+      result = JSON.parse(innerHTML);
+      if (result.device === 'esp8266') {
+        if (result.type === 'plantower') {
+          document.getElementById('message').innerHTML += new Date + ':湿度：' + parseInt(result.data.humidity) / 10 + '% ' + '温度：' + parseInt(result.data.temperature) / 10 + 'pm2.5：' + result.data.pm25 + '<br/>';
+          return;
+        }
+      }
+    } catch (error) {
+
+    }
     document.getElementById('message').innerHTML += new Date + ':' + innerHTML + '<br/>';
   }
 
