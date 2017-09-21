@@ -52,7 +52,9 @@ httpServer:use(
     function(req, res)
         if req.query.url ~= nil then
             str = "url " .. req.query.url .. "\r\n"
-            util.writeConfig(req.query.url)
+            local config = util.getConfig();
+            config.socketServer = req.query.url;
+            util.setConfig(config);
             res:send(str) -- /welcome?name=doge
         else
             res:send("query nil")

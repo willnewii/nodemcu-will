@@ -1,5 +1,11 @@
 util = {}
 
+function util.printTable(table)
+    for k, v in pairs(table) do
+        print(k, v)
+    end
+end
+
 function util.printFSInfo()
     remaining, used, total = file.fsinfo()
     print(
@@ -15,47 +21,55 @@ function util.printFiles()
     end
 end
 
-function util.printInfo()
-    util.printFiles()
-    util.printIP()
-end
-
-function util.jsondecode(_str)
-    local data = nil
-    pcall(
-        function(str)
-            data = sjson.decode(str)
-        end,
-        _str
-    )
+function util.jsondecode(str)
+    local result, data = pcall(sjson.decode, str)
+    if result == false then
+        print("failed to decode!--"..data);
+        data = nil ;
+    end
     return data
 end
 
-function util.writeConfig(url)
-    fd = file.open("device.config", "w+")
+function util.jsonencode(tab)
+    local result, json = pcall(sjson.encode, tab)
+    if result == false then
+        print("failed to encode!--"..json);
+        json = nil ;
+    end
+    return json ;
+end
+
+function util.setConfig(config)
+    local fd = file.open("device.config", "w+")
     if fd then
-        fd:write('{ "socketServer": "' .. url .. '" }')
+        fd:write(util.jsonencode(config));
         fd:close()
         fd = nil
     end
 end
 
-function util.readConfig()
-    fd = file.open("device.config", "r")
-    socketServer = nil
+-- socketServer
+function util.getConfig()
+    local fd = file.open("device.config", "r")
+    config = nil
     if fd then
-        str = fd:readline()
-        --print(str)
-        result = util.jsondecode(str)
-        socketServer = result.socketServer
+        local str = fd:readline()
+        config = util.jsondecode(str)
         fd:close()
         fd = nil
     end
-    return socketServer
+    return config
 end
 
 function util.test()
     print("test")
+    local config = util.getConfig() ;
+    print(util.printTable(config));
+    config.socketServer = 'ws://192.168.4.123:5555';
+    util.setConfig(config);
+    print(util.getConfig().socketServer);
 end
+
+util.test()
 
 return util
