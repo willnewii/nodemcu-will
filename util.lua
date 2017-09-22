@@ -61,15 +61,14 @@ function util.getConfig()
     return config
 end
 
-function util.test()
-    print("test")
+function util.setSocketServer(url)
     local config = util.getConfig() ;
-    print(util.printTable(config));
-    config.socketServer = 'ws://192.168.4.123:5555';
+    if config == nil then
+        config = {};
+    end
+    config.socketServer = url;
     util.setConfig(config);
     print(util.getConfig().socketServer);
 end
-
-util.test()
 
 return util

@@ -43,11 +43,8 @@ end
 
 function handlePMS5003ST(data)
     airInfo.pm25 = (string.byte(data, 13) * 256 + string.byte(data, 14))
-    --print("pm25 = "..airInfo.pm25);
     airInfo.temperature = (string.byte(data, 31) * 256 + string.byte(data, 32))
-    --print("temperature = "..airInfo.temperature);
     airInfo.humidity = (string.byte(data, 33) * 256 + string.byte(data, 34))
-    --print("humidity = "..airInfo.humidity);
 end
 
 return util_uart

@@ -17,9 +17,9 @@ end
 function util_gpio.blink(pin, times)
     for i = 1, times, 1 do
         util_gpio.setgpio(pin, 0)
-        tmr.delay(second * 0.5)
+        tmr.delay(second * 1)
         util_gpio.setgpio(pin, 1)
-        tmr.delay(second * 0.5)
+        tmr.delay(second * 1)
     end
 end
 

@@ -1,8 +1,8 @@
 require("util_gpio")
 util_websocket = {}
 
-local ws = websocket.createClient()
-local msg = {device = "esp8266", data = nil}
+ws = websocket.createClient()
+msg = {device = "esp8266", data = nil}
 
 function util_websocket.init(url, callback)
     ws:on(

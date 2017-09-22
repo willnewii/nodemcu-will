@@ -11,15 +11,14 @@ function util_wifi.setupAP()
 end
 
 function util_wifi.setupWifi(SSID, PASS)
-    print(wifi.sta.getip())
-    --wifi.setmode(wifi.STATION);
-
+    wifi.setmode(wifi.STATION);
     station_cfg = {}
     station_cfg.ssid = SSID
     station_cfg.pwd = PASS
     station_cfg.save = true
     station_cfg.auto = true
     wifi.sta.config(station_cfg)
+    
     print(wifi.sta.getip())
 end
 
