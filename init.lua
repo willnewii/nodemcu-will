@@ -1,11 +1,11 @@
 -- startup httpServer
 --require("util_httpServer.lua")
 
-require("util")
-require("util_gpio")
-require("util_websocket")
-require("util_uart")
-require("util_wifi")
+require("_util")
+require("_gpio")
+require("_websocket")
+require("_uart")
+require("_wifi")
 
 function pms5003ST()
     util_websocket.init(
@@ -26,14 +26,14 @@ end
 util_gpio.blink(0, 3)
 
 -- connection network 
---util_wifi.setupWifi("ivan_office","1234567899");
-util_wifi.setupWifi("CU_KszY","r5d5757q");
+util_wifi.setupWifi("ivan_office","1234567899");
+--util_wifi.setupWifi("CU_KszY","r5d5757q");
 
 -- setup socketServer   
-util.setSocketServer('ws://192.168.1.2:5555/websocket');
+--util.setSocketServer('ws://192.168.1.2:5555/websocket');
+util.setSocketServer('ws://192.168.11.63:5555/websocket');
 
-print(util.getConfig().socketServer)
-
+-- listener net
 tmr.alarm(
     1,
     1000,
@@ -48,3 +48,5 @@ tmr.alarm(
         end
     end
 )
+
+-- print(util.getConfig().socketServer)

@@ -1,5 +1,5 @@
-require("util")
-require("util_wifi")
+require("_util")
+require("_wifi")
 
 --util.test();
 --util_wifi.test();
@@ -45,5 +45,5 @@ util_uart.init(function(airInfo)
 end);
 ]] --
 
-require("util_httpServer")
+require("_httpServer")
 

@@ -16,7 +16,7 @@
 </body>
 
 <script type="text/javascript">
-  let url = "ws://192.168.1.2:5555/websocket";
+  let url = "ws://192.168.11.63:5555/websocket";
   var websocket = null;
   //判断当前浏览器是否支持WebSocket
   if ('WebSocket' in window) {
@@ -56,14 +56,15 @@
       result = JSON.parse(innerHTML);
       if (result.device === 'esp8266') {
         if (result.type === 'plantower') {
-          document.getElementById('message').innerHTML += new Date + ':湿度：' + parseInt(result.data.humidity) / 10 + '% ' + '温度：' + parseInt(result.data.temperature) / 10 + 'pm2.5：' + result.data.pm25 + '<br/>';
+          inster(getDate() + ':  湿度:' + parseInt(result.data.humidity) / 10 + '%   温度:' + parseInt(result.data.temperature) /
+            10 + '   pm2.5:' + result.data.pm25);
           return;
         }
       }
     } catch (error) {
 
     }
-    document.getElementById('message').innerHTML += new Date + ':' + innerHTML + '<br/>';
+    inster(getDate() + ':' + innerHTML);
   }
 
   //关闭WebSocket连接
@@ -83,6 +84,17 @@
       }
     }
     websocket.send(JSON.stringify(msg));
+  }
+
+  function getDate() {
+    var date = new Date;
+    date = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date
+      .getMinutes() + ':' + date.getSeconds();
+    return date;
+  }
+
+  function inster(content) {
+    document.getElementById('message').innerHTML = content + '<br/>' + document.getElementById('message').innerHTML;
   }
 
 </script>

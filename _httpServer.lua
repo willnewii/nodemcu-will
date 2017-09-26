@@ -1,6 +1,6 @@
-require("httpServer")
-require("util_wifi")
-require("util")
+require("__httpServer")
+require("_wifi")
+require("_util")
 
 util_wifi.setupAP()
 
@@ -10,16 +10,30 @@ httpServer:use(
     "/",
     function(req, res)
         br = "<br><br>"
-        str = "i am nodemcu" .. br
+        str = "<h1>nodemcu</h1>" .. br
+
+        -- print ip
         if wifi.sta.getip() ~= nil then
-            str = str .. 'ip: '..wifi.sta.getip() .. br
+            str = str .. "ip: " .. wifi.sta.getip() .. br
         else
             str = str .. "no connection" .. br
         end
-        str = str .. "config-websocket:" .. util.readConfig() .. br
+
+        -- print config
+        if util.getConfig() == nil then
+            str = str .. "config-websocket:nil" .. br
+        else
+            str = str .. "config-websocket:" .. util.getConfig() .. br
+        end
+
+        -- print gpio
         for i = 1, 12, 1 do
             str = str .. string.format("<li>gpio%s : %s </li>", i, gpio.read(i))
         end
+        str = str .. br
+
+        -- print api
+        str = str .. '<a href="/getheap">getheap</a>' .. br
         str = str .. '<a href="/setupwifi">setup wifi(ssid/pwd)</a>' .. br
         str = str .. '<a href="/setupwebsocket">setup websocket(url)</a>' .. br
         res:send(str)
@@ -27,9 +41,9 @@ httpServer:use(
 )
 
 httpServer:use(
-    "/test",
+    "/getheap",
     function(req, res)
-        res:send("Hello " .. req.query.name) -- /welcome?name=doge
+        res:send("heap " .. node.heap()) -- /welcome?name=doge
     end
 )
 
@@ -52,9 +66,9 @@ httpServer:use(
     function(req, res)
         if req.query.url ~= nil then
             str = "url " .. req.query.url .. "\r\n"
-            local config = util.getConfig();
-            config.socketServer = req.query.url;
-            util.setConfig(config);
+            local config = util.getConfig()
+            config.socketServer = req.query.url
+            util.setConfig(config)
             res:send(str) -- /welcome?name=doge
         else
             res:send("query nil")

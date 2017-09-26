@@ -1,44 +1,32 @@
--- startup httpServer
---require("util_httpServer.lua")
+local ledCounts = 10
 
-require("util")
-require("util_gpio")
-require("util_websocket")
-require("util_uart")
-require("util_wifi")
+function startWS2812()
+    ws2812.init()
+    local i, buffer = 0, ws2812.newBuffer(ledCounts, 3)
+    local j = 0
+    buffer:fill(61, 133, 247)
 
-function pms5003ST()
-    util_websocket.init(
-        util.getConfig().socketServer,
+    tmr.create():alarm(
+        1,
+        200,
+        1,
         function()
-            util_websocket.send("nodemcu online")
-            print("websocket.star")
+            i = i + 1
+            buffer:fade(2, 1)
+            buffer:set(i % (buffer:size() - j) + 1, 0, 0, 0)
+
+            if i % (buffer:size() - j) == 0 then
+                j = j + 1
+            end
+
+            if j == ledCounts then
+                j = 0
+            end
+            ws2812.write(buffer)
         end
     )
-    --[[
-    util_uart.init(
-        function(airInfo)
-            util_gpio.blink(0, 1)
-            util_websocket.send(airInfo, "plantower")
-        end
-    )
-    ]]--
 end
 
--- device startup
-util_gpio.blink(0, 3)
+startWS2812()
+tmr.stop()
 
--- connection network 
---util_wifi.setupWifi("ivan_office","1234567899");
-
--- setup socketServer   
---util.setSocketServer('ws://192.168.11.63:5555/websocket');
-
-print(util.getConfig().socketServer)
-
-if wifi.sta.getip() then
-    util_gpio.blink(0, 1)
-    pms5003ST()
-else
-    print("net false")
-end

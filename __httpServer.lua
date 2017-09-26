@@ -10,25 +10,6 @@ function urlDecode(url)
     )
 end
 
-function guessType(filename)
-    local types = {
-        [".css"] = "text/css",
-        [".js"] = "application/javascript",
-        [".html"] = "text/html",
-        [".png"] = "image/png",
-        [".jpg"] = "image/jpeg"
-    }
-    for ext, type in pairs(types) do
-        if
-            string.sub(filename, -string.len(ext)) == ext or
-                string.sub(filename, -string.len(ext .. ".gz")) == ext .. ".gz"
-         then
-            return type
-        end
-    end
-    return "text/plain"
-end
-
 --------------------
 -- Response
 --------------------
@@ -89,49 +70,6 @@ function Res:send(body)
     doSend()
 end
 
-function Res:sendFile(filename)
-    if file.exists(filename .. ".gz") then
-        filename = filename .. ".gz"
-    elseif not file.exists(filename) then
-        self:status(404)
-        if filename == "404.html" then
-            self:send(404)
-        else
-            self:sendFile("404.html")
-        end
-        return
-    end
-
-    self._status = self._status or 200
-    local header = "HTTP/1.1 " .. self._status .. "\r\n"
-
-    self._type = self._type or guessType(filename)
-
-    header = header .. "Content-Type: " .. self._type .. "\r\n"
-    if string.sub(filename, -3) == ".gz" then
-        header = header .. "Content-Encoding: gzip\r\n"
-    end
-    header = header .. "\r\n"
-
-    print("* Sending ", filename)
-    local pos = 0
-    local function doSend()
-        file.open(filename, "r")
-        if file.seek("set", pos) == nil then
-            self:close()
-            print("* Finished ", filename)
-        else
-            local buf = file.read(512)
-            pos = pos + 512
-            self._skt:send(buf)
-        end
-        file.close()
-    end
-    self._skt:on("sent", doSend)
-
-    self._skt:send(header)
-end
-
 function Res:close()
     self._skt:on(
         "sent",
@@ -170,17 +108,6 @@ function parseHeader(req, res)
     return true
 end
 
-function staticFile(req, res)
-    local filename = ""
-    if req.path == "/" then
-        filename = "index.html"
-    else
-        filename = string.gsub(string.sub(req.path, 2), "/", "_")
-    end
-
-    res:sendFile(filename)
-end
-
 --------------------
 -- HttpServer
 --------------------
@@ -193,7 +120,7 @@ httpServer = {
         },
         {
             url = ".*",
-            cb = staticFile
+            cb = parseHeader
         }
     }
 }
@@ -230,7 +157,6 @@ function httpServer:listen(port)
                             break
                         end
                     end
-
                     collectgarbage()
                 end
             )

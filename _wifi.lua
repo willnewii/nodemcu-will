@@ -3,7 +3,7 @@ util_wifi = {}
 function util_wifi.setupAP()
     wifi.setmode(wifi.STATIONAP)
 
-    station_cfg = {}
+    local station_cfg = {}
     station_cfg.ssid = "nodemcu_1203"
     station_cfg.pwd = "123456789"
 
@@ -12,7 +12,7 @@ end
 
 function util_wifi.setupWifi(SSID, PASS)
     wifi.setmode(wifi.STATION);
-    station_cfg = {}
+    local station_cfg = {}
     station_cfg.ssid = SSID
     station_cfg.pwd = PASS
     station_cfg.save = true

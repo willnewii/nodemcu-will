@@ -2,7 +2,6 @@ util_uart = {}
 
 local tempData = nil
 local airInfo = {pm25 = 0, temperature = 0, humidity = 0}
-
 local count = 14
 
 function util_uart.init(callback)
@@ -11,7 +10,7 @@ function util_uart.init(callback)
         "data",
         0,
         function(data)
-            print("readdata")
+            print("--readdata--")
             if (string.byte(data, 1) == 0x42) then
                 tempData = data
             elseif (type(tempData) ~= "nil") then
@@ -40,6 +39,8 @@ function util_uart.init(callback)
         0
     )
 end
+
+--uart.on("data")
 
 function handlePMS5003ST(data)
     airInfo.pm25 = (string.byte(data, 13) * 256 + string.byte(data, 14))
