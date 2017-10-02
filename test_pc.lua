@@ -1,49 +1,49 @@
-require("_util")
-require("_wifi")
+local s = '255, 0, 0';
 
---util.test();
---util_wifi.test();
+local tempRGB = {};
 
-airInfo = {pm2 = 10, temperature = "25"}
-print(airInfo.temperature)
-print("hahah" .. airInfo.a)
-print(sjson.encode(airInfo))
+for word in string.gmatch(s, "%d+") do
+    table.insert( tempRGB, #tempRGB+1, word );
+end
 
-tempData = nil
-print(type(tempData) ~= "nil")
+print(tempRGB[1])
+print(tempRGB[2])
+print(tempRGB[3])
 
-pcall(
-    function(str)
-        data = sjson.decode(str)
-    end,
-    "1231231"
-)
+local ledCounts = 10
 
---[[
-require("util.lua")
-require("util_wifi.lua")
+function startWS2812()
+    ws2812.init()
+    local i, buffer = 0, ws2812.newBuffer(ledCounts, 3)
+    local j = 0
+    buffer:fill(61, 133, 247)
 
-util.printInfo(LED0);
-util.printFSInfo();
-util_wifi.setupWifi("ivan_office","1234567899");
-util.printFiles();
-util_wifi.getIP();
-]] --
+    tmr.create():alarm(
+        1,
+        200,
+        1,
+        function()
+            i = i + 1
+            buffer:fade(2, 1)
+            buffer:set(i % (buffer:size() - j) + 1, 0, 0, 0)
 
---[[
-require("util_gpio.lua")
-require("util_websocket.lua")
-require("util_uart.lua")
- 
-util_websocket.init('ws://10.1.101.184:5555/websocket',function()
-    print('websocket.star');
-end); 
+            if i % (buffer:size() - j) == 0 then
+                j = j + 1
+            end
 
-util_uart.init(function(airInfo)
-    util_gpio.blink(0,1);
-    util_websocket.send(airInfo,'plantower');
-end);
-]] --
+            if j == ledCounts then
+                j = 0
+            end
+            ws2812.write(buffer)
+        end
+    )
+end
 
-require("_httpServer")
+startWS2812()
+tmr.stop()
 
+require("LightStrip")
+
+local lightStrip = LightStrip:new()
+lightStrip:init()
+lightStrip:setColor(250, 224, 224)
