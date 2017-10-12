@@ -7,7 +7,13 @@
 </head>
 
 <body>
-  Welcome<br/><input id="text" type="text" />
+  Welcome
+  <br/>
+  <input id="text" type="text" />
+  <select name="type" id="type">
+    <option value="gpio">gpio</option>
+    <option value="lightStrip">lightStrip</option>
+  </select>
   <button onclick="send()">发送消息</button>
   <hr/>
   <button onclick="closeWebSocket()">关闭WebSocket连接</button>
@@ -75,9 +81,10 @@
   //发送消息
   function send() {
     var message = document.getElementById('text').value;
+    var type = document.getElementById('type').value;
     let msg = {
       name: 'browser',
-      action: 'gpio', //gpio/airInfo
+      action: type, //gpio/airInfo
       data: {
         pin: 0,
         value: 'high' //low,high

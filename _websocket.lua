@@ -4,13 +4,13 @@ util_websocket = {}
 local ws = websocket.createClient()
 local msg = {device = "esp8266", data = nil}
 
-function util_websocket.init(url, callback)
+function util_websocket.init(url, callback1, callback2)
     ws:on(
         "connection",
         function(ws)
             print("got ws connection")
-            if (callback ~= nil) then
-                callback()
+            if (callback1 ~= nil) then
+                callback1()
             end
         end
     )
@@ -28,6 +28,10 @@ function util_websocket.init(url, callback)
             if (data ~= nil) then
                 if (data.action == "gpio") then
                     handleGPIO(data.data.pin, data.data.value)
+                elseif (data.action == "lightStrip") then
+                    if (callback2 ~= nil) then
+                        callback2(data.data)
+                    end
                 else
                     print("action no match")
                 end
@@ -51,7 +55,7 @@ function util_websocket.send(data, type)
 end
 
 function util_websocket.close()
-    ws:close();
+    ws:close()
 end
 
 function handleGPIO(pin, value)

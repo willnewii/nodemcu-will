@@ -8,7 +8,7 @@ function LightStrip:new(ledCount, mode)
     self.mode = mode or 0
 
     if ledCount == 0 then
-    -- 报错
+    -- error
     end
 
     ws2812.init()
@@ -18,7 +18,7 @@ function LightStrip:new(ledCount, mode)
 end
 
 function LightStrip:init()
-    print("init-" .. self.mode)
+    --print("init-" .. self.mode)
 end
 
 function LightStrip:setMode(mode)
@@ -36,13 +36,13 @@ function LightStrip:getColorFromFile()
     while flag do
         count = count + 1
         local s = file.readline()
-        if s ~= nil then
+        if s ~= nil and count <= self.ledCount then
             local rgb = {}
             for word in string.gmatch(s, "%d+") do
                 table.insert(rgb, #rgb + 1, word)
             end
             --print(count..'-'..rgb[2] .. "-" .. rgb[1] .. "-" .. rgb[3])
-            self.buffer:set(count, rgb[2], rgb[1], rgb[3])
+            self.buffer:set(count, string.char(rgb[2], rgb[1], rgb[3]))
         else
             flag = false
         end
