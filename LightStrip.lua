@@ -27,6 +27,7 @@ end
 
 function LightStrip:setColor(r, g, b)
     self.buffer:fill(g, r, b)
+    ws2812.write(self.buffer)
 end
 
 function LightStrip:getColorFromFile()
