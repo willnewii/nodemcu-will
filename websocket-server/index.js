@@ -8,14 +8,6 @@ const wss = new WebSocket.Server({
   path: '/websocket'
 });
 
-wss.broadcastAll = function broadcast(data) {
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
-    }
-  });
-};
-
 wss.broadcast = function broadcast(data, ws) {
   wss.clients.forEach(function each(client) {
     if (client !== ws && client.readyState === WebSocket.OPEN) {

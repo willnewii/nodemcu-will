@@ -1,39 +1,64 @@
-function divideColor(str)
-    local tempRGB = {}
-    for word in string.gmatch(str, "%d+") do
-        table.insert(tempRGB, #tempRGB + 1, word)
-    end
-    return tempRGB
+require("_util")
+require("_websocket")
+require("_wifi")
+
+function init_websocket()
+    util_websocket.init(
+        util.getConfig().socketServer,
+        function()
+            util_websocket.send("nodemcu online")
+            print("websocket.star")
+        end,
+        function(data)
+            util.printTable(data)
+            print("websocket.receive")
+        end
+    )
 end
 
-function readColorFile(buffer)
-    file.open("colors", "r")
-    local flag, count = true, 0
-    
-    while flag do
-        count = count + 1
-        local s = file.readline()
-        if s ~= nil then
-            local rgb = divideColor(s)
-            --print(count..'-'..rgb[2] .. "-" .. rgb[1] .. "-" .. rgb[3])
-            buffer:set(count, rgb[2], rgb[1], rgb[3])
+-- connection network
+util_wifi.setupWifi("ivan_office", "1234567899")
+--util_wifi.setupWifi("CU_KszY","r5d5757q");
+
+-- setup socketServer
+--util.setSocketServer('ws://192.168.1.2:5555/websocket');
+util.setSocketServer("ws://192.168.11.63:5555/websocket")
+
+-- listener net
+tmr.alarm(
+    1,
+    1000,
+    tmr.ALARM_AUTO,
+    function()
+        if wifi.sta.getip() == nil then
+            --util_gpio.blink(4, 1)
         else
-            flag = false
+            util_gpio.blink(0, 1)
+            init_websocket()
+            tmr.stop(1)
         end
     end
-    file.close()
-end
+)
 
-local i, buffer = 0, ws2812.newBuffer(60, 3)
---buffer:set(1,0,255,0);
+--[[
+require("LightStrip")
+
+
+local lightStrip = LightStrip:new(60);
+lightStrip.buffer:fade(2, ws2812.FADE_IN);
+lightStrip:setColor(120, 206, 253);
+--lightStrip:getColorFromFile();
+lightStrip:wirte();
+
 
 ws2812.init()
---readColorFile(buffer)
-
-buffer:fill(255,0,0)
-
-print(buffer:get(1))
-print(buffer:get(2))
-print(buffer:get(3))
-
-ws2812.write(buffer)
+i, buffer = 0, ws2812.newBuffer(60, 3); 
+buffer:fill(0, 128, 0);
+tmr.alarm(0, 50, 1, function()
+        i = i + 1
+        buffer:fade(2,1)
+        buffer:set(i%buffer:size() + 1, 0, 0, 0)
+        ws2812.write(buffer)
+end)
+]]
+--
