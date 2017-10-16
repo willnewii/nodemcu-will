@@ -29,3 +29,36 @@
 ### 参考资料
 - [lua教程](http://www.runoob.com/lua/lua-tutorial.html)
 - [nodemcu文档](https://nodemcu.readthedocs.io/en/master/)
+
+### esp8266 刷机
+![阵脚连接](http://obfmtiyt5.bkt.clouddn.com/img/819239-20170103234531081-897735531.png)
+GPIO0　默认是工作模式（不接线）。如果接了低电平就是下载模式（给模块刷固件！！）所以接低电平。CH_PD接高电平,其余除了TX,RX外可以不接线..
+
+- 复位:CH_PD引脚的3.3V电源断了重接进行复位
+
+### 
+```shell
+# 
+esptool.py -p /dev/tty.wchusbserial1420 flash_id
+# 删除
+esptool.py -p /dev/tty.wchusbserial1420 erase_flash
+# 刷机
+esptool.py -p /dev/tty.wchusbserial1420 write_flash 0x0 xxx.bin
+```
+
+### [McuNode](http://eiot.club/)
+#### server 构建
+```shell
+# 下载go
+# https://www.golangtc.com/download
+
+# 配置环境变量  GOROOT(go目录) PATH(bin目录) GOPATH(项目目录)
+# http://blog.csdn.net/chenggong2dm/article/details/49364691
+
+# 下载项目依赖
+go get github.com/astaxie/beego
+go get github.com/IoTServ/McuNode-server/mcunode/routers
+
+# build
+go build main.go
+```

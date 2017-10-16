@@ -72,3 +72,24 @@ tmr.alarm(
         end
     end
 )
+
+--[[ 淡入淡出
+require("LightStrip")
+
+local lightStrip = LightStrip:new(60);
+lightStrip.buffer:fade(2, ws2812.FADE_IN);
+lightStrip:setColor(120, 206, 253);
+--lightStrip:getColorFromFile();
+lightStrip:wirte();
+
+ws2812.init()
+i, buffer = 0, ws2812.newBuffer(60, 3); 
+buffer:fill(0, 128, 0);
+tmr.alarm(0, 50, 1, function()
+        i = i + 1
+        buffer:fade(2,1)
+        buffer:set(i%buffer:size() + 1, 0, 0, 0)
+        ws2812.write(buffer)
+end)
+]]
+--
